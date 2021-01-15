@@ -18,6 +18,8 @@ h1 {
 }
 
 .input {
+  font-size: 18px;
+  font-style: italic;
   display: block;
   margin: 0 auto;
   width: 60%;
@@ -45,4 +47,9 @@ h1 {
 
 .button:hover {
   background: #967bb6;
+}
+
+.errors {
+  font-size: 15px;
+  color: red;
 }

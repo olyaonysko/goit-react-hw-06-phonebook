@@ -1,53 +1,23 @@
-import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { contactsArray } from '../ContactList/contactList-selector';
+import InputMask from 'react-input-mask';
+// import * as yup from 'yup';
 import { toast } from 'react-toastify';
-import isMobilePhone from 'validator/es/lib/isMobilePhone';
+import { contactsArray } from '../ContactList/contactList-selector';
 import s from './ContactForm.module.css';
 import { addContacts } from '../../redux/contacts-action';
 
 export default function ContactForm() {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-  const contacts = useSelector(contactsArray);
   const dispatch = useDispatch();
+  const contacts = useSelector(contactsArray);
+  const { register, handleSubmit, errors, reset, control } = useForm();
 
-  const handleChange = event => {
-    const { name, value } = event.target;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-
-      case 'number':
-        setNumber(value);
-        break;
-
-      default:
-        return;
-    }
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    if (!name || !number) {
-      toast.info('👺 All fields must be filled!');
-      return;
-    }
-
-    if (!isMobilePhone(number)) {
-      toast.info('👺 Telephone number must be numeric!');
-      return;
-    }
-
+  const onSumbit = ({ name, number }) => {
     if (
       contacts.find(
         contact => contact.name.toLowerCase() === name.toLowerCase(),
       )
     ) {
-      console.log('work');
       toast.info(`🙄 ${name} is already in contacts!`);
       return;
     }
@@ -58,41 +28,65 @@ export default function ContactForm() {
     }
 
     dispatch(addContacts(name, number));
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setName('');
-    setNumber('');
+    reset();
   };
 
   return (
-    <form onSubmit={handleSubmit} className={s.form}>
+    <form onSubmit={handleSubmit(onSumbit)} className={s.form}>
       <label className={s.label}>
         Name
         <input
           type="text"
           name="name"
+          ref={register({
+            minLength: { value: 2, message: 'Too short name' },
+            maxLength: { value: 20, message: 'Too long name' },
+            required: 'Is a required field',
+          })}
           className={s.input}
           placeholder="Enter name"
-          value={name}
-          onChange={handleChange}
         />
+        {errors.name && <p className={s.errors}>{errors.name.message}</p>}
       </label>
       <label className={s.label}>
         Number
-        <input
-          type="tel"
+        <Controller
+          as={InputMask}
           name="number"
+          rules={{
+            required: 'Phone number is required',
+          }}
+          defaultValue=""
+          control={control}
           className={s.input}
-          placeholder="+380(__)-___-__-__"
-          value={number}
-          onChange={handleChange}
+          placeholder="+38 (___) ___-__-__"
+          mask="+38 (999) 999-99-99"
         />
+        {errors.number && <p className={s.errors}>{errors.number.message}</p>}
       </label>
       <button type="submit" className={s.button}>
         Add contact
       </button>
     </form>
   );
+}
+
+// old input number
+{
+  /* <input
+          type="tel"
+          name="number"
+          ref={register({
+            required: 'Is a required field',
+            minLength: { value: 10, message: 'Too short number' },
+            maxLength: { value: 20, message: 'Too long number' },
+            pattern: {
+              value: /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/,
+              message: 'work',
+            },
+          })}
+          className={s.input}
+          placeholder="Enter number"
+        />
+        {errors.number && <p className={s.errors}>{errors.number.message}</p>} */
 }
