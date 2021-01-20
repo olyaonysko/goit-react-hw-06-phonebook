@@ -1,5 +1,3 @@
-// import { useState, useEffect } from 'react';
-// import shortid from 'shortid';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Container from './components/Container';

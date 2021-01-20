@@ -44,34 +44,3 @@ export default combineReducers({
   filter: filterReducer,
   isLoading,
 });
-
-// import { combineReducers, createReducer } from '@reduxjs/toolkit';
-// import { addContacts, deleteContacts, changeFilter } from './contacts-action';
-// import {
-//   fetchContacts,
-//   fetchAddContact,
-//   fetchDeleteContact,
-// } from './contacts-operation';
-
-// // const contactsReducer = createReducer([], {
-// //   [addContacts]: (state, { payload }) => [...state, payload],
-// [deleteContacts]: (state, { payload }) =>
-//   state.filter(contact => {
-//     return contact.id !== payload;
-//   }),
-// // });
-
-// const contactsReducer = createReducer([], {
-//   [fetchContacts.fulfilled]: (_, action) => action.payload,
-//   [fetchAddContact.fulfilled]: (state, { payload }) => [...state, payload],
-//   [fetchDeleteContact.fulfilled]: (state, { payload }) =>
-//     state.filter(contact => {
-//       return contact.id !== payload;
-//     }),
-// });
-
-// // const isLoading = createReducer(false, {
-// //   [fetchContacts.pending]: () => true,
-// //   [fetchContacts.fulfilled]: () => false,
-// //   [fetchContacts.rejected]: () => false,
-// // });
