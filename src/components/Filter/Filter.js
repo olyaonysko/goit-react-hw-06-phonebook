@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeFilter } from '../../redux/contacts-action';
-import { filterValue } from './filter-selector';
-import { contactsArray } from '../ContactList/contactList-selector';
+import { contactsActions, contactsSelectors } from 'redux/contacts';
 import s from './Filter.module.css';
 
 const Filter = () => {
-  const filter = useSelector(filterValue);
-  const contacts = useSelector(contactsArray);
+  const filter = useSelector(contactsSelectors.getFilter);
+  const contacts = useSelector(contactsSelectors.getContacts);
   const dispatch = useDispatch();
 
   return (
@@ -20,7 +18,9 @@ const Filter = () => {
             className={s.input}
             placeholder="Enter name"
             value={filter}
-            onChange={event => dispatch(changeFilter(event.target.value))}
+            onChange={event =>
+              dispatch(contactsActions.changeFilter(event.target.value))
+            }
           />
         </label>
       )}

@@ -1,28 +1,21 @@
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteContacts } from '../../redux/contacts-action';
-import { contactsArray } from './contactList-selector';
-import { filterValue } from '../Filter/filter-selector';
+import { contactsOperations, contactsSelectors } from 'redux/contacts';
 import s from './ContactList.module.css';
 
 const ContactList = () => {
-  const contacts = useSelector(contactsArray);
-  const filter = useSelector(filterValue);
+  const visibleContacts = useSelector(contactsSelectors.getVisibleContacts);
+  const contacts = useSelector(contactsSelectors.getContacts);
   const dispatch = useDispatch();
 
-  const onFilteredContacts = (contacts, filter) => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase()),
-    );
-  };
-
-  const filteredContacts = onFilteredContacts(contacts, filter);
+  useEffect(() => dispatch(contactsOperations.getContacts()), [dispatch]);
 
   return (
     <>
       {contacts.length > 0 ? (
         <ul className={s.list}>
-          {filteredContacts.map(({ id, name, number }) => (
+          {visibleContacts.map(({ id, name, number }) => (
             <li key={id} className={s.listItem}>
               <p>
                 {name}: {number}
@@ -30,7 +23,7 @@ const ContactList = () => {
               <button
                 type="button"
                 className={s.button}
-                onClick={() => dispatch(deleteContacts(id))}
+                onClick={() => dispatch(contactsOperations.deleteContact(id))}
               >
                 Delete
               </button>

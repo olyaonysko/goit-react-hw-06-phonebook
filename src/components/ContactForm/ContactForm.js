@@ -1,15 +1,14 @@
 import { useForm, Controller } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
+import { contactsOperations, contactsSelectors } from 'redux/contacts';
 import InputMask from 'react-input-mask';
 // import * as yup from 'yup';
 import { toast } from 'react-toastify';
-import { contactsArray } from '../ContactList/contactList-selector';
 import s from './ContactForm.module.css';
-import { addContacts } from '../../redux/contacts-action';
 
 export default function ContactForm() {
   const dispatch = useDispatch();
-  const contacts = useSelector(contactsArray);
+  const contacts = useSelector(contactsSelectors.getContacts);
   const { register, handleSubmit, errors, reset, control } = useForm();
 
   const onSumbit = ({ name, number }) => {
@@ -23,11 +22,11 @@ export default function ContactForm() {
     }
 
     if (contacts.find(contact => contact.number === number)) {
-      toast.info(`This number is already in contacts!`);
+      toast.info('This number is already in contacts!');
       return;
     }
 
-    dispatch(addContacts(name, number));
+    dispatch(contactsOperations.addContact(name, number));
     reset();
   };
 
@@ -61,6 +60,7 @@ export default function ContactForm() {
           className={s.input}
           placeholder="+38 (___) ___-__-__"
           mask="+38 (999) 999-99-99"
+          // value="10"
         />
         {errors.number && <p className={s.errors}>{errors.number.message}</p>}
       </label>
@@ -72,8 +72,8 @@ export default function ContactForm() {
 }
 
 // old input number
-{
-  /* <input
+// {
+/* <input
           type="tel"
           name="number"
           ref={register({
@@ -89,4 +89,4 @@ export default function ContactForm() {
           placeholder="Enter number"
         />
         {errors.number && <p className={s.errors}>{errors.number.message}</p>} */
-}
+// }
